@@ -1,1 +1,1 @@
-https://puhluettelo-backend.herokuapp.com/
+production url: https://puhluettelo-backend.herokuapp.com/
