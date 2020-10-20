@@ -7,6 +7,8 @@ morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
 app.use(express.static('build'))
+require('dotenv').config()
+const Record = require('./models/Record')
 
 let persons = [
     { id: 1, name: "Easter Bunny", number: "040 - 123456" },
@@ -17,16 +19,27 @@ let persons = [
 
 app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id);
-    const person = persons.find(e => e.id === id);
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    Record.findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(person)
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(400).send({ error: 'malformatted id' })
+        })
+
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons);
+    Record.find({})
+        .then(records => {
+            res.json(records)
+        })
+        .catch(error => console.log(error.message))
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -44,12 +57,13 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({ error: 'name already exists' });
     }
 
-    const person = {
+    const person = new Record({
         id: Math.floor(Math.random() * 12000),
         ...req.body
-    };
-    persons = persons.concat(person);
-    res.json(person);
+    });
+    person.save()
+        .then(person => { res.json(person) })
+        .catch(error => console.log(error.message))
 })
 
 app.get('/api/info', (req, res) => {
