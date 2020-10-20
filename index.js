@@ -43,10 +43,6 @@ app.post('/api/persons', (req, res, next) => {
         return res.status(400).json({ error: 'name or number missing' })
     }
 
-    // if (persons.some(e => e.name === req.body.name)) {
-    //     return res.status(400).json({ error: 'name already exists' });
-    // }
-
     const person = new Record({
         id: Math.floor(Math.random() * 12000),
         ...req.body
@@ -67,8 +63,9 @@ app.put('/api/persons/:id', (req, res, next) => {
 
 app.get('/api/info', (req, res) => {
     const now = new Date(Date.now()).toISOString();
-    res.send(`<p>Phonebook has info for ${persons.length} people </p>
-     <p/>Now is ${now} <p>`);
+    Record.countDocuments({})
+        .then(amount => res.send(`<p>Phonebook has info for ${amount} people </p>
+    <p/>Now is ${now} <p>`))
 })
 
 const errorHandler = (error, req, res, next) => {
