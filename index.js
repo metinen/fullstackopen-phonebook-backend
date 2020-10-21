@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const app = express()
 app.use(express.static('build'))
 app.use(express.json())
+// eslint-disable-next-line no-unused-vars
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
@@ -32,9 +33,7 @@ app.get('/api/persons', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
     Record.findByIdAndRemove(req.params.id)
-        .then(result => {
-            res.status(204).end();
-        })
+        .then(res.status(204).end())
         .catch(error => next(error))
 })
 
@@ -46,14 +45,14 @@ app.post('/api/persons', (req, res, next) => {
     const person = new Record({
         id: Math.floor(Math.random() * 12000),
         ...req.body
-    });
+    })
     person.save()
         .then(person => res.json(person))
         .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-    const body = req.body;
+    const body = req.body
     const person = { name: body.name, number: body.number }
 
     Record.findByIdAndUpdate(req.params.id, person, { new: true })
@@ -62,7 +61,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 })
 
 app.get('/api/info', (req, res) => {
-    const now = new Date(Date.now()).toISOString();
+    const now = new Date(Date.now()).toISOString()
     Record.countDocuments({})
         .then(amount => res.send(`<p>Phonebook has info for ${amount} people </p>
     <p/>Now is ${now} <p>`))
@@ -80,6 +79,6 @@ const errorHandler = (error, req, res, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 

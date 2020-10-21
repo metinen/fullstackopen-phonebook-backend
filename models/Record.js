@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const url = process.env.MONGO_DB_URL
 
-console.log("Trying to open connection to db")
+console.log('Trying to open connection to db')
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-    .then(e => console.log("Connection to db open"))
-    .catch(e => console.log("Connection could not be opened to db", e.message))
+    .then(console.log('Connection to db open'))
+    .catch(e => console.log('Connection could not be opened to db', e.message))
 
 const recordSchema = new mongoose.Schema({ name: String, number: String })
 
