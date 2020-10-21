@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+var uniqueValidator = require('mongoose-unique-validator')
 
 const url = process.env.MONGO_DB_URL
 
@@ -7,7 +8,14 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     .then(console.log('Connection to db open'))
     .catch(e => console.log('Connection could not be opened to db', e.message))
 
-const recordSchema = new mongoose.Schema({ name: String, number: String })
+const recordSchema = new mongoose.Schema(
+    {
+        name: { type: String, required: true, unique: true, minlength: 3 },
+        number: { type: String, required: true, minlength: 8 }
+    }
+)
+
+recordSchema.plugin(uniqueValidator)
 
 recordSchema.set('toJSON', {
     transform: (document, returnedObject) => {
